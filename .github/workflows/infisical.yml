@@ -1,22 +1,28 @@
-name: Build with Infisical Secrets
+name: Run with Infisical Secrets
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build:
+  run-with-secrets:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
       - name: Install Infisical CLI
         run: |
           curl -1sLf "https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh" | sudo -E bash
           sudo apt-get update && sudo apt-get install -y infisical
 
-      - name: Run with Infisical Secrets
+      - name: Debug Infisical Secrets (Optional)
         env:
           INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
-        run: infisical run --env=development "npm run build"
+        run: infisical run --env=development printenv
+
+      - name: Run App with Secrets
+        env:
+          INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
+        run: infisical run --env=development "npm run dev"
