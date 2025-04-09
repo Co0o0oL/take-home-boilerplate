@@ -21,7 +21,7 @@ jobs:
         env:
           INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
         run: |
-          infisical run --env=development printenv | grep -i api
+          infisical run --env=development printenv
 
       - name: Scan for exposed secrets
         env:
@@ -32,3 +32,10 @@ jobs:
       - name: Output scan results
         run: |
           cat report.json
+
+      - name: Upload scan report
+        uses: actions/upload-artifact@v3
+        with:
+          name: infisical-scan-report
+          path: report.json
+
